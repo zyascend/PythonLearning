@@ -1,4 +1,5 @@
 # -*-coding:utf-8-*-
+import functools
 from functools import reduce
 
 a = "aaaaa"
@@ -225,3 +226,64 @@ l = [45, 5, 8, 45, -7, 0]
 print(sorted(l))
 print(sorted(l, key=abs))  # key指定的函数将作用于list的每一个元素上，并根据key函数返回的结果进行排序
 print(sorted(['bob', 'about', 'Zoo', 'Credit'], key=str.lower, reverse=True))
+
+
+def count():  # 返回一个方法，且满足闭包
+    def f(x):
+        def g():
+            return x * x
+
+        return g
+
+    fs = []
+    for i in range(1, 4):
+        fs.append(f(i))
+    return fs
+
+
+f1, f2, f3 = count()
+print(f1())
+print(f2())
+print(f3())
+
+
+#  装饰器
+
+
+def log(func):
+    def wrapper(*arg, **kw):
+        print('call %s()' % func.__name__)
+        return func(*arg, **kw)
+
+    return wrapper
+
+
+@log
+def now():
+    print("2017-10-28")
+
+
+now()
+
+# 偏函数
+# functools.partial的作用就是，把一个函数的某些参数给固定住（也就是设置默认值），返回一个新的函数
+int2 = functools.partial(int, base=2)
+print('---', int2("100011"))
+print(functools.partial(max, 10)(1, 2, 3))
+
+
+#  面向对象
+class Student(object):
+    def __init__(self, name, score):
+        self.score = score
+        self.name = name
+        self.__sex = 1  # __ 标识此变量为private
+
+    def print_score(self):
+        print('score:', self.score)
+
+
+s1 = Student('MIng', 100)
+print(s1)
+print('%s : %s' % (s1.name, s1.score))
+s1.print_score()
