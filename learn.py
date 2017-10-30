@@ -274,6 +274,18 @@ print(functools.partial(max, 10)(1, 2, 3))
 
 #  面向对象
 class Student(object):
+    # __slots__ = ('score', 'name', 'height', '__sex')
+    # 定义一个特殊的__slots__变量，
+    # 来限制该class实例能添加的属性,对子类不起作用
+
+    @property
+    def weight(self):
+        return self._weight
+
+    @weight.setter
+    def weight(self, value):
+        self._weight = value
+
     def __init__(self, name, score):
         self.score = score
         self.name = name
@@ -282,8 +294,51 @@ class Student(object):
     def print_score(self):
         print('score:', self.score)
 
+    def __str__(self):
+        return 'Student: name= %s' % self.name
+
+    __repr__ = __str__
+
 
 s1 = Student('MIng', 100)
 print(s1)
 print('%s : %s' % (s1.name, s1.score))
 s1.print_score()
+print(type(s1))
+print(isinstance(s1, Student))
+print(dir(s1))  # 获得一个对象的所有属性和方法
+
+s1.height = 167  # 动态绑定属性
+print(s1.height)
+
+
+def new_func(self):
+    print('this is a new func')
+
+
+Student.new_func = new_func
+s2 = Student('Name', 56)
+s2.new_func()  # 为类动态绑定方法
+
+s2.weight = 67
+print(s2.weight)
+print(s2)
+
+# try catch 机制
+try:
+    print('in try block')
+except ZeroDivisionError as e:
+    print(e)
+finally:
+    print('In finally block')
+
+
+# 文件读写
+try:
+    filePath = 'C:/Users/Administrator.WIN7U-20140224N/Desktop'
+    f = open(filePath,'r')
+    print(f.read())
+except IOError as e:
+    print(e)
+finally:
+    f.close()
