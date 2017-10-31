@@ -3,7 +3,7 @@ import os
 import random
 import time
 
-from multiprocessing import Process
+from multiprocessing import Process, Queue
 from multiprocessing import Pool
 
 
@@ -37,3 +37,30 @@ if __name__ == '__main__':
     p.close()
     p.join()
     print('All subProcess done...')
+
+
+# 进程间通信
+def write(q):
+    print('Process write: (%s)' % os.getpid())
+    for v in ['A', 'B','C']:
+        print('put [%s] in queue' % v)
+        q.put(v)
+        time.sleep(random.random())
+
+
+def read(q):
+    print('Process read: (%s)' % os.getpid())
+    while True:
+        v = q.get(True)
+        print('get [%s] from queue' % v)
+
+
+if __name__ == "__main__":
+    q = Queue()
+    pw = Process(target=read, args=(q,))
+    pr = Process(target=write, args=(q,))
+    pw.start()
+    pr.start()
+    pw.join()
+    pw.terminate()
+
